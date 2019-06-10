@@ -1,0 +1,30 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "id": "feature-route",
+  "type": "object",
+  "properties": {
+    "project": {
+      "type": "string",
+      "description": "Project name",
+      "x-prompt": "Which project?"
+    },
+    "feature": {
+      "type": "string",
+      "description": "Feature name",
+      "x-prompt": "What's the feature route?"
+    },
+    "auth": {
+      "type": "boolean",
+      "description": "Authenticated",
+      "default": true,
+      "x-prompt": "Does the user need to be authenticated?"
+    },
+    "navigation": {
+      "type": "boolean",
+      "description": "Navigation",
+      "default": true,
+      "x-prompt": "Should this be added to the site's navigation?"
+    }
+  },
+  "required": ["project", "feature"]
+}

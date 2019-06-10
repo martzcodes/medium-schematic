@@ -7,5 +7,15 @@
     "tslint.json": "*",
     "nx.json": "*"
   },
-  "projects": {}
+  "projects": {
+    "core": {
+      "tags": []
+    },
+    "qwerty": {
+      "tags": []
+    },
+    "qwerty-e2e": {
+      "tags": []
+    }
+  }
 }

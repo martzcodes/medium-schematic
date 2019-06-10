@@ -2,7 +2,146 @@
   "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
   "version": 1,
   "newProjectRoot": "",
-  "projects": {},
+  "projects": {
+    "core": {
+      "root": "libs/core",
+      "sourceRoot": "libs/core/src",
+      "projectType": "library",
+      "prefix": "martzcodes",
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "libs/core/tsconfig.lib.json",
+              "libs/core/tsconfig.spec.json"
+            ],
+            "exclude": ["**/node_modules/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/core/jest.config.js",
+            "tsConfig": "libs/core/tsconfig.spec.json",
+            "setupFile": "libs/core/src/test-setup.ts"
+          }
+        }
+      },
+      "schematics": {}
+    },
+    "qwerty": {
+      "root": "apps/qwerty/",
+      "sourceRoot": "apps/qwerty/src",
+      "projectType": "application",
+      "prefix": "martzcodes",
+      "schematics": {},
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            "outputPath": "dist/apps/qwerty",
+            "index": "apps/qwerty/src/index.html",
+            "main": "apps/qwerty/src/main.ts",
+            "polyfills": "apps/qwerty/src/polyfills.ts",
+            "tsConfig": "apps/qwerty/tsconfig.app.json",
+            "assets": ["apps/qwerty/src/favicon.ico", "apps/qwerty/src/assets"],
+            "styles": ["apps/qwerty/src/styles.css"],
+            "scripts": [],
+            "es5BrowserSupport": true
+          },
+          "configurations": {
+            "production": {
+              "fileReplacements": [
+                {
+                  "replace": "apps/qwerty/src/environments/environment.ts",
+                  "with": "apps/qwerty/src/environments/environment.prod.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "extractCss": true,
+              "namedChunks": false,
+              "aot": true,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "browserTarget": "qwerty:build"
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "qwerty:build:production"
+            }
+          }
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "qwerty:build"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "apps/qwerty/tsconfig.app.json",
+              "apps/qwerty/tsconfig.spec.json"
+            ],
+            "exclude": ["**/node_modules/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/builders:jest",
+          "options": {
+            "jestConfig": "apps/qwerty/jest.config.js",
+            "tsConfig": "apps/qwerty/tsconfig.spec.json",
+            "setupFile": "apps/qwerty/src/test-setup.ts"
+          }
+        }
+      }
+    },
+    "qwerty-e2e": {
+      "root": "apps/qwerty-e2e",
+      "projectType": "application",
+      "prefix": "",
+      "architect": {
+        "e2e": {
+          "builder": "@nrwl/builders:cypress",
+          "options": {
+            "cypressConfig": "apps/qwerty-e2e/cypress.json",
+            "tsConfig": "apps/qwerty-e2e/tsconfig.e2e.json",
+            "devServerTarget": "qwerty:serve"
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "qwerty:serve:production"
+            }
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": "apps/qwerty-e2e/tsconfig.e2e.json",
+            "exclude": ["**/node_modules/**"]
+          }
+        }
+      }
+    }
+  },
   "cli": {
     "warnings": {
       "typescriptMismatch": false,
@@ -10,5 +149,14 @@
     },
     "defaultCollection": "@nrwl/schematics"
   },
-  "schematics": {}
+  "schematics": {
+    "@nrwl/angular:application": {
+      "unitTestRunner": "jest",
+      "e2eTestRunner": "cypress"
+    },
+    "@nrwl/angular:library": {
+      "unitTestRunner": "jest"
+    }
+  },
+  "defaultProject": "core"
 }
