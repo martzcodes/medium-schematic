@@ -37,12 +37,7 @@ function addComponentToRoute(options: NormalizedSchema): Rule {
     const route = `{
       path: '',
       pathMatch: 'full',
-      component: ${strings.capitalize(options.feature)}ContainerComponent${
-      options.auth
-        ? `,
-      canLoad: [DummyGuard]`
-        : ''
-    }
+      component: ${strings.capitalize(options.feature)}ContainerComponent
     }`;
 
     const nodes = getSourceNodes(src);
@@ -102,22 +97,6 @@ function addComponentToRoute(options: NormalizedSchema): Rule {
         );
       }
 
-      if (options.auth) {
-        const authChange = insertImport(
-          src,
-          featureRoutingPath,
-          'DummyGuard',
-          '@martzcodes/core',
-          false
-        );
-        if (authChange instanceof InsertChange) {
-          recorder.insertLeft(
-            (authChange as InsertChange).pos,
-            (authChange as InsertChange).toAdd
-          );
-        }
-      }
-
       host.commitUpdate(recorder);
       return host;
     }
@@ -139,8 +118,6 @@ function addRouteToApp(options: NormalizedSchema): Rule {
       ts.ScriptTarget.Latest,
       true
     );
-
-    // showTree(src);
 
     const route = `{
       path: '${options.feature}',
@@ -241,8 +218,6 @@ function addNavigation(options: NormalizedSchema): Rule {
       true
     );
 
-    // showTree(src);
-
     const nodes = getSourceNodes(src);
     const navNodes = nodes
       .filter((n: ts.Node) => {
@@ -290,18 +265,6 @@ function addNavigation(options: NormalizedSchema): Rule {
 
     return host;
   };
-}
-
-function showTree(node: ts.Node, indent: string = '    '): void {
-  console.log(indent + ts.SyntaxKind[node.kind]);
-
-  if (node.getChildCount() === 0) {
-    console.log(indent + '    Text: ' + node.getText());
-  }
-
-  for (const child of node.getChildren()) {
-    showTree(child, indent + '    ');
-  }
 }
 
 interface NormalizedSchema extends Schema {
