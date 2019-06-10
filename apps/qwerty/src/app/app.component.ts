@@ -2,9 +2,20 @@ import { Component } from '@angular/core';
 
 @Component({
   selector: 'martzcodes-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  template: `
+    <div style="text-align:center">
+      <h1>Welcome to {{ title }}!</h1>
+      <pre>{{ navigation | json }}</pre>
+    </div>
+  `,
+
+  styles: []
 })
 export class AppComponent {
   title = 'qwerty';
+  navigation: any[];
+
+  constructor() {
+    this.navigation = [];
+  }
 }
