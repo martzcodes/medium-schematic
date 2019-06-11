@@ -16,6 +16,6 @@ export class AppComponent {
   navigation: any[];
 
   constructor() {
-    this.navigation = [];
+    this.navigation = [{name: 'Asdf', router: '/asdf', unsecure: false}];
   }
 }
