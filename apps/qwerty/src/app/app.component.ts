@@ -6,6 +6,7 @@ import { Component } from '@angular/core';
     <div style="text-align:center">
       <h1>Welcome to {{ title }}!</h1>
       <pre>{{ navigation | json }}</pre>
+      <router-outlet></router-outlet>
     </div>
   `,
 
@@ -16,6 +17,6 @@ export class AppComponent {
   navigation: any[];
 
   constructor() {
-    this.navigation = [{name: 'Asdf', router: '/asdf', unsecure: false}];
+    this.navigation = [{ name: 'Asdf', router: '/asdf', unsecure: false }];
   }
 }
