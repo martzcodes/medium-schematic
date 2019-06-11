@@ -13,11 +13,11 @@
       "description": "Feature name",
       "x-prompt": "What's the feature route?"
     },
-    "auth": {
+    "dummy": {
       "type": "boolean",
-      "description": "Authenticated",
+      "description": "Dummy Guard",
       "default": true,
-      "x-prompt": "Does the user need to be authenticated?"
+      "x-prompt": "Should the route use the Dummy Guard?"
     },
     "navigation": {
       "type": "boolean",

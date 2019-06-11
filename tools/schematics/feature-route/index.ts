@@ -59,7 +59,7 @@ function addComponentToRoute(options: NormalizedSchema): Rule {
       .map((n: ts.Node) => {
         const arrNodes = n
           .getChildren()
-          .filter(c => (c.kind = ts.SyntaxKind.ArrayLiteralExpression));
+          .filter(c => c.kind === ts.SyntaxKind.ArrayLiteralExpression);
         return arrNodes[arrNodes.length - 1];
       });
 
@@ -126,7 +126,7 @@ function addRouteToApp(options: NormalizedSchema): Rule {
       )}/${strings.dasherize(options.feature)}.module#${strings.capitalize(
       options.feature
     )}Module'${
-      options.auth
+      options.dummy
         ? `,
       canLoad: [DummyGuard]`
         : ''
@@ -152,7 +152,7 @@ function addRouteToApp(options: NormalizedSchema): Rule {
       .map((n: ts.Node) => {
         const arrNodes = n
           .getChildren()
-          .filter(c => (c.kind = ts.SyntaxKind.ArrayLiteralExpression));
+          .filter(c => c.kind === ts.SyntaxKind.ArrayLiteralExpression);
         return arrNodes[arrNodes.length - 1];
       });
 
@@ -174,18 +174,18 @@ function addRouteToApp(options: NormalizedSchema): Rule {
       const recorder = host.beginUpdate(appRoutingPath);
       recorder.insertRight(pos, toInsert);
 
-      if (options.auth) {
-        const authChange = insertImport(
+      if (options.dummy) {
+        const dummyChange = insertImport(
           src,
           `${options.appProjectRoot}/src/app/app-routing.module.ts`,
           'DummyGuard',
           '@martzcodes/core',
           false
         );
-        if (authChange instanceof InsertChange) {
+        if (dummyChange instanceof InsertChange) {
           recorder.insertLeft(
-            (authChange as InsertChange).pos,
-            (authChange as InsertChange).toAdd
+            (dummyChange as InsertChange).pos,
+            (dummyChange as InsertChange).toAdd
           );
         }
       }
@@ -206,7 +206,7 @@ function addNavigation(options: NormalizedSchema): Rule {
     const navPath = `{name: '${strings.capitalize(
       options.feature
     )}', router: '/${options.feature}', unsecure: ${
-      options.auth ? 'false' : 'true'
+      options.dummy ? 'false' : 'true'
     }}`;
     // tslint:disable-next-line
     const appComponent = host.read(componentPath)!.toString('utf-8');
@@ -230,7 +230,6 @@ function addNavigation(options: NormalizedSchema): Rule {
               );
             }) !== -1
           ) {
-            console.log('here in nav check');
             return true;
           }
         }
@@ -267,8 +266,29 @@ function addNavigation(options: NormalizedSchema): Rule {
   };
 }
 
+function showTree(node: ts.Node, indent: string = '    '): void {
+  console.log(indent + ts.SyntaxKind[node.kind]);
+
+  if (node.getChildCount() === 0) {
+    console.log(indent + '    Text: ' + node.getText());
+  }
+
+  for (const child of node.getChildren()) {
+    showTree(child, indent + '    ');
+  }
+}
+
 interface NormalizedSchema extends Schema {
   appProjectRoot: string;
+}
+
+function normalizeOptions(host: Tree, options: Schema): NormalizedSchema {
+  const appProjectRoot = `apps/${options.project}`;
+
+  return {
+    ...options,
+    appProjectRoot
+  };
 }
 
 export default function(schema: Schema): Rule {
@@ -296,14 +316,5 @@ export default function(schema: Schema): Rule {
       addRouteToApp(options),
       addNavigation(options)
     ]);
-  };
-}
-
-function normalizeOptions(host: Tree, options: Schema): NormalizedSchema {
-  const appProjectRoot = `apps/${options.project}`;
-
-  return {
-    ...options,
-    appProjectRoot
   };
 }
